@@ -224,6 +224,41 @@ struct GDScriptUtilityFunctionsDefinitions {
 		*r_ret = ResourceLoader::load(*p_args[0]);
 	}
 
+
+
+	static inline void get_subpath(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
+		if (p_args[0]->get_type() == Variant::NIL) {
+			*r_ret = Variant();
+			return;
+		}
+
+		Object *obj = *p_args[0];
+		if (!obj) {
+			*r_ret = Variant();
+			return;
+		}
+
+		GDScriptInstance *inst = static_cast<GDScriptInstance *>(obj->get_script_instance());
+		Ref<GDScript> base = inst->get_script();
+
+		GDScript *p = base.ptr();
+		String path = p->get_script_path();
+		Vector<StringName> sname;
+
+		while (p->_owner) {
+			sname.push_back(p->local_name);
+			p = p->_owner;
+		}
+		sname.reverse();
+
+		VALIDATE_ARG_CUSTOM(0, Variant::OBJECT, !path.is_resource_file(), RTR("Not based on a resource file."));
+
+		NodePath cp(sname, Vector<StringName>(), false);
+
+		*r_ret = cp;
+
+	}
+
 #ifndef DISABLE_DEPRECATED
 
 	static inline void inst_to_dict(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
@@ -578,6 +613,7 @@ void GDScriptUtilityFunctions::register_functions() {
 	REGISTER_FUNC( _char,          true,  RET(STRING),        ARGS( ARG("char", INT)                ), false, varray(     ));
 	REGISTER_FUNC( range,          false, RET(ARRAY),         NOARGS,                                  true,  varray(     ));
 	REGISTER_FUNC( load,           false, RETCLS("Resource"), ARGS( ARG("path", STRING)             ), false, varray(     ));
+	REGISTER_FUNC( get_subpath,    true, RET(STRING),         ARGS( ARG("instance", OBJECT)         ), false, varray(     ));
 #ifndef DISABLE_DEPRECATED
 	REGISTER_FUNC( inst_to_dict,   false, RET(DICTIONARY),    ARGS( ARG("instance", OBJECT)         ), false, varray(     ));
 	REGISTER_FUNC( dict_to_inst,   false, RET(OBJECT),        ARGS( ARG("dictionary", DICTIONARY)   ), false, varray(     ));
