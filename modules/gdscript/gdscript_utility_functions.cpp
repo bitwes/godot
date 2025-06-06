@@ -226,15 +226,19 @@ struct GDScriptUtilityFunctionsDefinitions {
 
 
 
-	static inline void get_subpath(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
+	static inline void butch_method(Variant *r_ret, const Variant **p_args, int p_arg_count, Callable::CallError &r_error) {
+		// String to_return;
+		// to_return = "Well fuck me running both ways from Friday.";
+		// *r_ret = "to_return";
+
 		if (p_args[0]->get_type() == Variant::NIL) {
-			*r_ret = Variant();
+			*r_ret = "bad thing 1";
 			return;
 		}
 
 		Object *obj = *p_args[0];
 		if (!obj) {
-			*r_ret = Variant();
+			*r_ret = "bad thing 2";
 			return;
 		}
 
@@ -251,7 +255,8 @@ struct GDScriptUtilityFunctionsDefinitions {
 		}
 		sname.reverse();
 
-		VALIDATE_ARG_CUSTOM(0, Variant::OBJECT, !path.is_resource_file(), RTR("Not based on a resource file."));
+
+		// VALIDATE_ARG_CUSTOM(0, Variant::OBJECT, !path.is_resource_file(), RTR("Not based on a resource file."));
 
 		NodePath cp(sname, Vector<StringName>(), false);
 
@@ -613,7 +618,7 @@ void GDScriptUtilityFunctions::register_functions() {
 	REGISTER_FUNC( _char,          true,  RET(STRING),        ARGS( ARG("char", INT)                ), false, varray(     ));
 	REGISTER_FUNC( range,          false, RET(ARRAY),         NOARGS,                                  true,  varray(     ));
 	REGISTER_FUNC( load,           false, RETCLS("Resource"), ARGS( ARG("path", STRING)             ), false, varray(     ));
-	REGISTER_FUNC( get_subpath,    true, RET(STRING),         ARGS( ARG("instance", OBJECT)         ), false, varray(     ));
+	REGISTER_FUNC( butch_method,    true, RET(STRING),        ARGS( ARG("instance", OBJECT)         ), false, varray(     ));
 #ifndef DISABLE_DEPRECATED
 	REGISTER_FUNC( inst_to_dict,   false, RET(DICTIONARY),    ARGS( ARG("instance", OBJECT)         ), false, varray(     ));
 	REGISTER_FUNC( dict_to_inst,   false, RET(OBJECT),        ARGS( ARG("dictionary", DICTIONARY)   ), false, varray(     ));

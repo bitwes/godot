@@ -208,13 +208,16 @@ int GDScriptTestRunner::run_tests() {
 #ifndef DEBUG_ENABLED
 		expected = strip_warnings(expected);
 #endif
-		INFO(test.get_source_file());
 		if (!result.passed) {
 			INFO(expected);
 			failed++;
 		}
 
-		CHECK_MESSAGE(result.passed, (result.passed ? String() : result.output));
+		CHECK_MESSAGE(result.passed, (result.passed ? String() :
+			"Failing:"
+			"\n-- Got --\n" + result.output +
+			"-- Expected --\n" + expected +
+			"----"));
 	}
 
 	return failed;
