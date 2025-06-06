@@ -1071,6 +1071,8 @@ void GDScript::_get_property_list(List<PropertyInfo> *p_properties) const {
 
 void GDScript::_bind_methods() {
 	ClassDB::bind_vararg_method(METHOD_FLAGS_DEFAULT, "new", &GDScript::_new, MethodInfo("new"));
+	ClassDB::bind_method("get_outer_script", &GDScript::get_outer_script);
+	ClassDB::bind_method(D_METHOD("get_local_name"), &GDScript::get_local_name);
 }
 
 void GDScript::set_path(const String &p_path, bool p_take_over) {
@@ -1228,6 +1230,17 @@ GDScript *GDScript::find_class(const String &p_qualified_name) {
 
 	return result;
 }
+
+
+
+
+GDScript *GDScript::get_outer_script(){
+	return _owner;
+	// GDScript *result = nullptr;
+	// return result;
+}
+
+
 
 bool GDScript::has_class(const GDScript *p_script) {
 	String fqn = p_script->fully_qualified_name;
